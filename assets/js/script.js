@@ -17,6 +17,7 @@ var createTimeBlocks = function() {
     for (var i = 0; i < hourCount; i++) {
         var timeblockTime = moment().hour(9).add(i, 'hour').format("hA");
         var hour = moment().hour(9).add(i, 'hour').format("kk")
+        var textContent = tasks["" + hour]
         console.log(hour);
         console.log(timeblockTime);
         console.log("now" + now + "hour" + hour)
@@ -42,7 +43,7 @@ var createTimeBlocks = function() {
         .appendTo(".timeblock#" + hour);
 
         $('<div class="toDo border-left border-right d-flex col-8">')
-        .text("add text here")
+        .text(textContent)
         .attr('id', hour)
         .appendTo(".timeblock#" + hour);
 
@@ -84,16 +85,15 @@ $(document).on("blur", "textarea", function(){
     .text(text);
 
     $(this).replaceWith(taskP);
-
-    tasks[""+id] = text;
-    saveTasks();
-
-
 })
 
 $(document).on("click", ".saveBtn", function(){
     var id = $(this).attr("id");
-    console.log("clicked save" + id)
+    var text = $("#" + id + ".toDo").text();
+    tasks[""+id] = text;
+    saveTasks();
+    console.log("clicked save" + id + "the text " + text);
+
 })
 
 var loadTasks = function() {
