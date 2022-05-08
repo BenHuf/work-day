@@ -2,6 +2,8 @@ var $container = $(".container");
 
 var hourCount = 9;
 var now = moment().format("kk");
+var tasks = [];
+
 
 console.log("the time is" + now);
 
@@ -31,18 +33,32 @@ for (var i = 0; i < hourCount; i++) {
         .attr('id', hour)
         .appendTo($container);
     }
+
+    $('<div class=toDo>')
+    .text("add text here")
+    .attr('id', hour)
+    .appendTo(".timeblock#" + hour);
+
+    $('<button class=saveBtn>')
+    .text("Save")
+    .attr('id', hour)
+    .appendTo($(".timeblock#" + hour));
+
+
+    }
 }
 
 // adds task text div
-$('<div class=toDo>')
-.text("add text here")
-.attr('id', parent)
-.appendTo(".timeblock");
+// $('<div class=toDo>')
+// .text("add text here")
+// .attr('id', parent)
+// .appendTo(".timeblock");
 
-// add save button
-$('<button class=saveBtn>')
-.text("Save")
-.appendTo($(".timeblock"));
-};
+// // add save button
+// $('<button class=saveBtn>')
+// .text("Save")
+// .appendTo($(".timeblock"));
+
+
 
 createTimeBlocks();
