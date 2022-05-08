@@ -20,17 +20,17 @@ var createTimeBlocks = function() {
         var hour = moment().hour(9).add(i, 'hour').format("kk");
         var textContent = tasks["" + hour];
 
-        $('<div class="hour col-1">')
+        $('<div class="hour align-items-center justify-content-center d-flex col-1">')
             .text(timeblockTime)
             .attr('id', hour)
             .appendTo($rowDiv);
 
-        $('<div class="toDo border-left border-right col-10 pl-3">')
+        $('<div class="toDo d-flex border-left border-right col-10 pl-3">')
             .text(textContent)
             .attr('id', hour)
             .appendTo($rowDiv);
 
-        $('<button class="saveBtn col-1">')
+        $('<button class="saveBtn align-items-center justify-content-center d-flex col-1">')
             .text("Save")
             .attr('id', hour)
             .appendTo($rowDiv);
