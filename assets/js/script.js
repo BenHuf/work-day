@@ -1,12 +1,17 @@
+// define/initialize variables
+// jquery
 var $container = $(".container");
-var hourCount = 9;
+var $rowDiv = $(".row-div");
+var $currentDay = $("#currentDay");
+// momentjs
 var now = moment().format("kk");
-var today = moment().format("DD MMMM, YYYY");
-var $dotw = $(".dotw");
+var today = moment().format("dddd MMMM D, YYYY");
+// javascript
 var tasks = {};
+var hourCount = 9;
 
-// Add date to top of screen
-$dotw.text("Today's Date is " + today);
+// add date to top of screen
+$currentDay.text(today)
 
 // creates time block elements 
 var createTimeBlocks = function() {
@@ -15,49 +20,51 @@ var createTimeBlocks = function() {
         var hour = moment().hour(9).add(i, 'hour').format("kk");
         var textContent = tasks["" + hour];
 
-        if (hour < now) {
-            $('<div class="d-flex h-100 bg-secondary justify-content-between align-content-center row timeblock col-12 col-lg border border-primary p-4">')
+        $('<div class="hour col-1">')
+            .text(timeblockTime)
             .attr('id', hour)
-            .appendTo($container);
+            .appendTo($rowDiv);
+
+        $('<div class="toDo border-left border-right col-10 pl-3">')
+            .text(textContent)
+            .attr('id', hour)
+            .appendTo($rowDiv);
+
+        $('<button class="saveBtn col-1">')
+            .text("Save")
+            .attr('id', hour)
+            .appendTo($rowDiv);
+
+        if (hour < now) {
+            $("div#" + hour + ".toDo")
+            .addClass("past")
         }
         else if (hour === now) {
-            $('<div class="d-flex h-100 bg-danger justify-content-between align-content-center row timeblock col-12 col-lg border border-primary p-4">')
-            .attr('id', hour)
-            .appendTo($container);
+            $("div#" + hour + ".toDo")
+            .addClass("present")
         }
         else {
-            $('<div class="d-flex h-100 bg-success justify-content-between align-content-center row timeblock col-12 col-lg border border-primary p-4">')
-            .attr('id', hour)
-            .appendTo($container);
+            $("div#" + hour + ".toDo")
+            .addClass("future")
         }
-
-        $('<p class="timeLabel h-100 col-1">')
-        .text(timeblockTime)
-        .attr('id', hour)
-        .appendTo(".timeblock#" + hour);
-
-        $('<div class="toDo border-left border-right d-flex col-8">')
-        .text(textContent)
-        .attr('id', hour)
-        .appendTo(".timeblock#" + hour);
-
-        $('<button class="saveBtn h-100 col-1">')
-        .text("Save")
-        .attr('id', hour)
-        .appendTo($(".timeblock#" + hour));
     }
 }
 
 // task text was clicked
 $(document).on("click", ".toDo", function() {
-    console.log("triggered");
-    
     var text = $(this)
         .text()
         .trim();
 
+    var id = $(this)
+        .attr("id");
+
+    var classLabel = $(this)
+        .attr("class");
+
     var textInput = $("<textarea>")
-        .addClass("editTask col-8")
+        .addClass(classLabel)
+        .attr("id", id)
         .val(text);
 
     $(this).replaceWith(textInput);
@@ -70,13 +77,15 @@ $(document).on("blur", "textarea", function(){
     var text = $(this).val();
 
     var id = $(this)
-    .closest(".timeblock")
-    .attr("id")
+        .attr("id")
 
-    var taskP = $("<p>")
-    .addClass("toDo d-flex col-8")
-    .attr('id', id)
-    .text(text);
+    var classLabel = $(this)
+        .attr("class");
+
+    var taskP = $("<div>")
+        .addClass(classLabel)
+        .attr('id', id)
+        .text(text);
 
     $(this).replaceWith(taskP);
 })
@@ -87,8 +96,6 @@ $(document).on("click", ".saveBtn", function(){
     var text = $("#" + id + ".toDo").text();
     tasks[""+id] = text;
     saveTasks();
-    console.log("clicked save" + id + "the text " + text);
-
 })
 
 // function to retrieve tasks from storage
@@ -105,7 +112,7 @@ var loadTasks = function() {
 // save tasks to local storage
 var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
-  };
+};
 
 
 // load tasks and create time blocks on page load
