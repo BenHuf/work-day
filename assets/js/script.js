@@ -2,51 +2,54 @@ var $container = $(".container");
 
 var hourCount = 9;
 var now = moment().format("kk");
-var tasks = [];
+var today = moment().format("DD MMMM, YYYY")
+var $dotw = $(".dotw");
+var tasks = {};
 
+// Add date to top of screen
+$dotw.text("Today's Date is " + today);
 
+// ensure document is ready
 $(document).ready(function(){});
-
-console.log("the time is" + now);
 
 // creates time block elements 
 var createTimeBlocks = function() {
-for (var i = 0; i < hourCount; i++) {
-    var timeblockTime = moment().hour(9).add(i, 'hour').format("hA");
-    var hour = moment().hour(9).add(i, 'hour').format("kk")
-    console.log(hour);
-    console.log(timeblockTime);
-    console.log("now" + now + "hour" + hour)
-    if (hour < now) {
-        $('<div class="d-flex bg-secondary row justify-content-between timeblock col-12 col-lg border border-primary p-4">')
-        .attr('id', hour)
-        .appendTo($container);
-    }
-    else if (hour === now) {
-        $('<div class="d-flex bg-danger row justify-content-between timeblock col-12 col-lg border border-primary p-4">')
-        .attr('id', hour)
-        .appendTo($container);
-    }
-    else {
-        $('<div class="d-flex bg-success row justify-content-between timeblock col-12 col-lg border border-primary p-4">')
-        .attr('id', hour)
-        .appendTo($container);
-    }
+    for (var i = 0; i < hourCount; i++) {
+        var timeblockTime = moment().hour(9).add(i, 'hour').format("hA");
+        var hour = moment().hour(9).add(i, 'hour').format("kk")
+        console.log(hour);
+        console.log(timeblockTime);
+        console.log("now" + now + "hour" + hour)
+        if (hour < now) {
+            $('<div class="d-flex h-100 bg-secondary justify-content-between align-content-center row timeblock col-12 col-lg border border-primary p-4">')
+            .attr('id', hour)
+            .appendTo($container);
+        }
+        else if (hour === now) {
+            $('<div class="d-flex h-100 bg-danger justify-content-between align-content-center row timeblock col-12 col-lg border border-primary p-4">')
+            .attr('id', hour)
+            .appendTo($container);
+        }
+        else {
+            $('<div class="d-flex h-100 bg-success justify-content-between align-content-center row timeblock col-12 col-lg border border-primary p-4">')
+            .attr('id', hour)
+            .appendTo($container);
+        }
 
-    $('<p class="timeLabel">')
-    .text(timeblockTime)
-    .attr('id', hour)
-    .appendTo(".timeblock#" + hour);
+        $('<p class="timeLabel h-100 col-1">')
+        .text(timeblockTime)
+        .attr('id', hour)
+        .appendTo(".timeblock#" + hour);
 
-    $('<p class="toDo">')
-    .text("add text here")
-    .attr('id', hour)
-    .appendTo(".timeblock#" + hour);
+        $('<div class="toDo border-left border-right d-flex col-8">')
+        .text("add text here")
+        .attr('id', hour)
+        .appendTo(".timeblock#" + hour);
 
-    $('<button class="saveBtn">')
-    .text("Save")
-    .attr('id', hour)
-    .appendTo($(".timeblock#" + hour));
+        $('<button class="saveBtn h-100 col-1">')
+        .text("Save")
+        .attr('id', hour)
+        .appendTo($(".timeblock#" + hour));
     }
 }
 
@@ -59,7 +62,7 @@ $(document).on("click", ".toDo", function() {
         .trim();
 
     var textInput = $("<textarea>")
-        .addClass("editTask")
+        .addClass("editTask col-8")
         .val(text);
 
     $(this).replaceWith(textInput);
@@ -67,6 +70,7 @@ $(document).on("click", ".toDo", function() {
     textInput.trigger("focus");
 });
 
+// replace tasks when you click off of textarea
 $(document).on("blur", "textarea", function(){
     var text = $(this).val();
 
@@ -75,12 +79,37 @@ $(document).on("blur", "textarea", function(){
     .attr("id")
 
     var taskP = $("<p>")
-    .addClass("toDo")
+    .addClass("toDo d-flex col-8")
     .attr('id', id)
     .text(text);
 
     $(this).replaceWith(taskP);
+
+    tasks[""+id] = text;
+    saveTasks();
+
+
 })
 
+$(document).on("click", ".saveBtn", function(){
+    var id = $(this).attr("id");
+    console.log("clicked save" + id)
+})
 
+var loadTasks = function() {
+    tasks = JSON.parse(localStorage.getItem("tasks"));
+
+    if (!tasks) {
+        tasks = {
+        };
+    }
+}
+
+
+// save tasks to local storage
+var saveTasks = function() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  };
+
+loadTasks();
 createTimeBlocks();
