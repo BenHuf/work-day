@@ -1,26 +1,20 @@
 var $container = $(".container");
-
 var hourCount = 9;
 var now = moment().format("kk");
-var today = moment().format("DD MMMM, YYYY")
+var today = moment().format("DD MMMM, YYYY");
 var $dotw = $(".dotw");
 var tasks = {};
 
 // Add date to top of screen
 $dotw.text("Today's Date is " + today);
 
-// ensure document is ready
-$(document).ready(function(){});
-
 // creates time block elements 
 var createTimeBlocks = function() {
     for (var i = 0; i < hourCount; i++) {
         var timeblockTime = moment().hour(9).add(i, 'hour').format("hA");
-        var hour = moment().hour(9).add(i, 'hour').format("kk")
-        var textContent = tasks["" + hour]
-        console.log(hour);
-        console.log(timeblockTime);
-        console.log("now" + now + "hour" + hour)
+        var hour = moment().hour(9).add(i, 'hour').format("kk");
+        var textContent = tasks["" + hour];
+
         if (hour < now) {
             $('<div class="d-flex h-100 bg-secondary justify-content-between align-content-center row timeblock col-12 col-lg border border-primary p-4">')
             .attr('id', hour)
@@ -87,6 +81,7 @@ $(document).on("blur", "textarea", function(){
     $(this).replaceWith(taskP);
 })
 
+// save tasks by clicking save button
 $(document).on("click", ".saveBtn", function(){
     var id = $(this).attr("id");
     var text = $("#" + id + ".toDo").text();
@@ -96,6 +91,7 @@ $(document).on("click", ".saveBtn", function(){
 
 })
 
+// function to retrieve tasks from storage
 var loadTasks = function() {
     tasks = JSON.parse(localStorage.getItem("tasks"));
 
@@ -103,7 +99,7 @@ var loadTasks = function() {
         tasks = {
         };
     }
-}
+};
 
 
 // save tasks to local storage
@@ -111,5 +107,7 @@ var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   };
 
+
+// load tasks and create time blocks on page load
 loadTasks();
 createTimeBlocks();
